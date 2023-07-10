@@ -24,6 +24,8 @@ import { DatabaseUserRepository } from '../repositories/user.repository';
 import { EnvironmentConfigModule } from '../config/environment-config/environment-config.module';
 import { EnvironmentConfigService } from '../config/environment-config/environment-config.service';
 import { UseCaseProxy } from './usecases-proxy';
+import { postSignUpUseCases } from 'src/usecases/signup/postSignUpUseCase';
+import { ExceptionsService } from '../exceptions/exceptions.service';
 
 @Module({
   imports: [LoggerModule, JwtModule, BcryptModule, EnvironmentConfigModule, RepositoriesModule, ExceptionsModule],
@@ -39,6 +41,9 @@ export class UsecasesProxyModule {
   static POST_TODO_USECASES_PROXY = 'postTodoUsecasesProxy';
   static DELETE_TODO_USECASES_PROXY = 'deleteTodoUsecasesProxy';
   static PUT_TODO_USECASES_PROXY = 'putTodoUsecasesProxy';
+
+  // SignUp
+  static POST_SIGNUP_USECASES_PROXY = 'postSignUpUseCasesProxy';
 
   static register(): DynamicModule {
     return {
@@ -93,6 +98,12 @@ export class UsecasesProxyModule {
           useFactory: (logger: LoggerService, todoRepository: DatabaseTodoRepository) =>
             new UseCaseProxy(new deleteTodoUseCases(logger, todoRepository)),
         },
+        {
+          inject: [LoggerService, DatabaseUserRepository, ExceptionsService],
+          provide: UsecasesProxyModule.POST_SIGNUP_USECASES_PROXY,
+          useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, exceptionService: ExceptionsService) =>
+            new UseCaseProxy(new postSignUpUseCases(logger, userRepository, exceptionService)),
+        },
       ],
       exports: [
         UsecasesProxyModule.GET_TODO_USECASES_PROXY,
@@ -103,6 +114,7 @@ export class UsecasesProxyModule {
         UsecasesProxyModule.LOGIN_USECASES_PROXY,
         UsecasesProxyModule.IS_AUTHENTICATED_USECASES_PROXY,
         UsecasesProxyModule.LOGOUT_USECASES_PROXY,
+        UsecasesProxyModule.POST_SIGNUP_USECASES_PROXY
       ],
     };
   }

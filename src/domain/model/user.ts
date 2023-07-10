@@ -1,8 +1,8 @@
 export class UserWithoutPassword {
   id: number;
   username: string;
-  createDate: Date;
-  updatedDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
   lastLogin: Date;
   hashRefreshToken: string;
 }

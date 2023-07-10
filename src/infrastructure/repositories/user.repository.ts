@@ -11,12 +11,13 @@ export class DatabaseUserRepository implements UserRepository {
     @InjectRepository(User)
     private readonly userEntityRepository: Repository<User>,
   ) {}
+
   async updateRefreshToken(username: string, refreshToken: string): Promise<void> {
     await this.userEntityRepository.update(
       {
         username: username,
       },
-      { hach_refresh_token: refreshToken },
+      { hashRefreshToken: refreshToken },
     );
   }
   async getUserByUsername(username: string): Promise<UserM> {
@@ -35,8 +36,12 @@ export class DatabaseUserRepository implements UserRepository {
       {
         username: username,
       },
-      { last_login: () => 'CURRENT_TIMESTAMP' },
+      { lastLogin: () => 'CURRENT_TIMESTAMP' },
     );
+  }
+
+  signUp(user: UserM): Promise<boolean> {
+    throw new Error('Method not implemented.');
   }
 
   private toUser(adminUserEntity: User): UserM {
@@ -45,10 +50,10 @@ export class DatabaseUserRepository implements UserRepository {
     adminUser.id = adminUserEntity.id;
     adminUser.username = adminUserEntity.username;
     adminUser.password = adminUserEntity.password;
-    adminUser.createDate = adminUserEntity.createdate;
-    adminUser.updatedDate = adminUserEntity.updateddate;
-    adminUser.lastLogin = adminUserEntity.last_login;
-    adminUser.hashRefreshToken = adminUserEntity.hach_refresh_token;
+    adminUser.createdAt = adminUserEntity.createdAt;
+    adminUser.updatedAt = adminUserEntity.updatedAt;
+    adminUser.lastLogin = adminUserEntity.lastLogin;
+    adminUser.hashRefreshToken = adminUserEntity.hashRefreshToken;
 
     return adminUser;
   }
@@ -58,7 +63,7 @@ export class DatabaseUserRepository implements UserRepository {
 
     adminUserEntity.username = adminUser.username;
     adminUserEntity.password = adminUser.password;
-    adminUserEntity.last_login = adminUser.lastLogin;
+    adminUserEntity.lastLogin = adminUser.lastLogin;
 
     return adminUserEntity;
   }

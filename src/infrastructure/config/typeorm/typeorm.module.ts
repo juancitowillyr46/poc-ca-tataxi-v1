@@ -12,7 +12,7 @@ export const getTypeOrmModuleOptions = (config: EnvironmentConfigService): TypeO
     password: config.getDatabasePassword(),
     database: config.getDatabaseName(),
     entities: [__dirname + './../../**/*.entity{.ts,.js}'],
-    synchronize: true
+    synchronize: false
   } as TypeOrmModuleOptions);
 
 @Module({
