@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SignUpPresenter {
+export class SignUpCustomerPresenter {
 
   @ApiProperty()
   isDone: boolean;

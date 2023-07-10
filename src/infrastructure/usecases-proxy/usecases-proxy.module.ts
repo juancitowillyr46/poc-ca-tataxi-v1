@@ -24,8 +24,8 @@ import { DatabaseUserRepository } from '../repositories/user.repository';
 import { EnvironmentConfigModule } from '../config/environment-config/environment-config.module';
 import { EnvironmentConfigService } from '../config/environment-config/environment-config.service';
 import { UseCaseProxy } from './usecases-proxy';
-import { postSignUpUseCases } from 'src/usecases/signup/postSignUpUseCase';
 import { ExceptionsService } from '../exceptions/exceptions.service';
+import { postCustomersSignUpUseCases } from 'src/usecases/customers/postCustomersSignUpUseCases';
 
 @Module({
   imports: [LoggerModule, JwtModule, BcryptModule, EnvironmentConfigModule, RepositoriesModule, ExceptionsModule],
@@ -42,8 +42,8 @@ export class UsecasesProxyModule {
   static DELETE_TODO_USECASES_PROXY = 'deleteTodoUsecasesProxy';
   static PUT_TODO_USECASES_PROXY = 'putTodoUsecasesProxy';
 
-  // SignUp
-  static POST_SIGNUP_USECASES_PROXY = 'postSignUpUseCasesProxy';
+  // Customers
+  static POST_CUSTOMERS_SIGN_UP_USECASE_PROXY = 'postCustomersSignUpUseCasesProxy';
 
   static register(): DynamicModule {
     return {
@@ -100,9 +100,9 @@ export class UsecasesProxyModule {
         },
         {
           inject: [LoggerService, DatabaseUserRepository, ExceptionsService],
-          provide: UsecasesProxyModule.POST_SIGNUP_USECASES_PROXY,
+          provide: UsecasesProxyModule.POST_CUSTOMERS_SIGN_UP_USECASE_PROXY,
           useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, exceptionService: ExceptionsService) =>
-            new UseCaseProxy(new postSignUpUseCases(logger, userRepository, exceptionService)),
+            new UseCaseProxy(new postCustomersSignUpUseCases(logger, userRepository, exceptionService)),
         },
       ],
       exports: [
@@ -114,7 +114,8 @@ export class UsecasesProxyModule {
         UsecasesProxyModule.LOGIN_USECASES_PROXY,
         UsecasesProxyModule.IS_AUTHENTICATED_USECASES_PROXY,
         UsecasesProxyModule.LOGOUT_USECASES_PROXY,
-        UsecasesProxyModule.POST_SIGNUP_USECASES_PROXY
+        //UsecasesProxyModule.POST_SIGNUP_USECASES_PROXY,
+        UsecasesProxyModule.POST_CUSTOMERS_SIGN_UP_USECASE_PROXY
       ],
     };
   }
