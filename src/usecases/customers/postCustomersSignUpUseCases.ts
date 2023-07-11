@@ -5,11 +5,14 @@ import { ExceptionsService } from 'src/infrastructure/exceptions/exceptions.serv
 import { SignUpCustomerM } from 'src/domain/model/customers/sign-up-customer';
 import { Roles } from 'src/domain/enums/roles.enum';
 import { BcryptService } from 'src/infrastructure/services/bcrypt/bcrypt.service';
+import { ProfileRepository } from 'src/domain/repositories/profileRepository.interface';
+import { ProfileM } from 'src/domain/model/profiles/profile';
 
 export class postCustomersSignUpUseCases {
   constructor(
     private readonly logger: ILogger,
     private readonly userRepo: UserRepository,
+    private readonly profileRepo: ProfileRepository,
     private readonly exceptionService: ExceptionsService,
     private readonly bcryptService: BcryptService
   ) {}
@@ -28,7 +31,19 @@ export class postCustomersSignUpUseCases {
         userM.username = signUp.username;
         userM.password = await this.bcryptService.hash(signUp.password);
         userM.roleId = Roles.CUSTOMER;
-        const result = await this.userRepo.createUser(userM);
+
+        const resultUser = await this.userRepo.createUser(userM);
+
+        let profileM = new ProfileM();
+        profileM.userId = resultUser.id;
+        profileM.email = 'jrodas@analytics.pe';
+        profileM.firstName = 'Juan';
+        profileM.lastName  = 'Rodas';
+        profileM.phoneNumber  = '+51943873302';
+        profileM.photo = 'https://avatar.com/1233';
+        
+        const resultProfile = await this.profileRepo.createProfile(profileM);
+
         this.logger.log('signUpCustomerUseCases execute', 'Nuevo usuario cliente');
     }
     

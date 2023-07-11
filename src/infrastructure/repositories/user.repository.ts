@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { UserM } from '../../domain/model/user';
 import { UserRepository } from '../../domain/repositories/userRepository.interface';
 import { Status, User } from '../entities/user.entity';
+import { ProfileM } from 'src/domain/model/profiles/profile';
 
 @Injectable()
 export class DatabaseUserRepository implements UserRepository {
@@ -73,4 +74,5 @@ export class DatabaseUserRepository implements UserRepository {
     return this.toUser(result.generatedMaps[0] as User);
     console.log(result.generatedMaps);
   }
+
 }

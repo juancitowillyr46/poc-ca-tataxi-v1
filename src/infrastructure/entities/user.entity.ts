@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Index, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToOne, JoinColumn } from 'typeorm';
 import { AuditableEntity } from './auditable.entity';
+import { Profile } from './profile.entity';
 
 export enum Status {
   AVAILABLE  = 'AVAILABLE',
@@ -38,4 +39,8 @@ export class User  extends AuditableEntity {
   @Column({enum: Status, default: Status.AVAILABLE, name: 'status'})
   status: Status;
 
+  @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
+  // @JoinColumn()
+  // @Column('int', {name: 'profile_id'})
+  profile: Profile;
 }

@@ -20,6 +20,7 @@ import { RepositoriesModule } from '../repositories/repositories.module';
 
 import { DatabaseTodoRepository } from '../repositories/todo.repository';
 import { DatabaseUserRepository } from '../repositories/user.repository';
+import { DatabaseProfileRepository } from '../repositories/profile.repository';
 
 import { EnvironmentConfigModule } from '../config/environment-config/environment-config.module';
 import { EnvironmentConfigService } from '../config/environment-config/environment-config.service';
@@ -27,6 +28,7 @@ import { UseCaseProxy } from './usecases-proxy';
 import { ExceptionsService } from '../exceptions/exceptions.service';
 import { postCustomersSignUpUseCases } from 'src/usecases/customers/postCustomersSignUpUseCases';
 import { postDriversSignUpUseCases } from 'src/usecases/drivers/postSignUpDriversUseCases';
+
 
 @Module({
   imports: [LoggerModule, JwtModule, BcryptModule, EnvironmentConfigModule, RepositoriesModule, ExceptionsModule],
@@ -103,10 +105,10 @@ export class UsecasesProxyModule {
             new UseCaseProxy(new deleteTodoUseCases(logger, todoRepository)),
         },
         {
-          inject: [LoggerService, DatabaseUserRepository, ExceptionsService, BcryptService],
+          inject: [LoggerService, DatabaseUserRepository, DatabaseProfileRepository, ExceptionsService, BcryptService],
           provide: UsecasesProxyModule.POST_CUSTOMERS_SIGN_UP_USECASE_PROXY,
-          useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, exceptionService: ExceptionsService, bcryptService: BcryptService) =>
-            new UseCaseProxy(new postCustomersSignUpUseCases(logger, userRepository, exceptionService, bcryptService)),
+          useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, profileRepository: DatabaseProfileRepository, exceptionService: ExceptionsService, bcryptService: BcryptService) =>
+            new UseCaseProxy(new postCustomersSignUpUseCases(logger, userRepository, profileRepository, exceptionService, bcryptService)),
         },
         {
           inject: [LoggerService, DatabaseUserRepository, ExceptionsService, BcryptService],

@@ -1,3 +1,4 @@
+import { ProfileM } from '../model/profiles/profile';
 import { UserM } from '../model/user';
 
 export interface UserRepository {
