@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserM } from '../../domain/model/user';
 import { UserRepository } from '../../domain/repositories/userRepository.interface';
-import { User } from '../entities/user.entity';
+import { Status, User } from '../entities/user.entity';
 
 @Injectable()
 export class DatabaseUserRepository implements UserRepository {
@@ -40,10 +40,6 @@ export class DatabaseUserRepository implements UserRepository {
     );
   }
 
-  signUp(user: UserM): Promise<boolean> {
-    throw new Error('Method not implemented.');
-  }
-
   private toUser(adminUserEntity: User): UserM {
     const adminUser: UserM = new UserM();
 
@@ -58,13 +54,23 @@ export class DatabaseUserRepository implements UserRepository {
     return adminUser;
   }
 
-  private toUserEntity(adminUser: UserM): User {
-    const adminUserEntity: User = new User();
+  private toUserEntity(user: UserM): User {
+    const userEntity: User = new User();
+    userEntity.username = user.username;
+    userEntity.password = user.password;
+    userEntity.roleId = user.roleId;
+    userEntity.status = Status.AVAILABLE;
+    userEntity.changePassword = false;
+    userEntity.confirmedEmail = true;
+    userEntity.createdAt = new Date();
+    userEntity.createdBy = 1;
+    return userEntity;
+  }
 
-    adminUserEntity.username = adminUser.username;
-    adminUserEntity.password = adminUser.password;
-    adminUserEntity.lastLogin = adminUser.lastLogin;
-
-    return adminUserEntity;
+  async createUser(user: UserM): Promise<UserM> {
+    const userEntity = this.toUserEntity(user);
+    const result = await this.userEntityRepository.insert(userEntity);
+    return this.toUser(result.generatedMaps[0] as User);
+    console.log(result.generatedMaps);
   }
 }

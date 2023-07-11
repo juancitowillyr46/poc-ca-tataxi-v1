@@ -29,6 +29,6 @@ export class CustomersController {
     signUpM.password = addSignUpDto.password;
 
     const signUpSuccess = await this.postCustomersSignUpUseCases.getInstance().execute(signUpM);
-    return new SignUpCustomerPresenter(signUpSuccess);
+    return new SignUpCustomerPresenter(signUpSuccess, 'Gracias por registrarse');
   }
 }

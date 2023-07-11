@@ -12,37 +12,41 @@ export class postSignUpUseCases {
     private readonly exceptionService: ExceptionsService
   ) {}
 
-  async execute(signUp: SignUpM, userType: UserType): Promise<boolean> {
+  //async execute(signUp: SignUpM, userType: UserType): Promise<boolean> {
 
-    let userM = new UserM();
-    let success = true;
+    // let userM = new UserM();
+    // let success = true;
 
-    let isEqualPws = signUp.validateConfirmPassword(signUp.password, signUp.confirmPassword);
+    // let isEqualPws = signUp.validateConfirmPassword(signUp.password, signUp.confirmPassword);
 
-    //isEqualPws.then((result) => {
-      if(!isEqualPws) {
-        this.logger.warn('SignUp', `Password is not Equals`);
-        success = false;
-        this.exceptionService.UnauthorizedException();
-      } else {
-        userM.username = signUp.username;
-        userM.password = signUp.password;
+    // //isEqualPws.then((result) => {
+    //   if(!isEqualPws) {
+    //     this.logger.warn('SignUp', `Password is not Equals`);
+    //     success = false;
+    //     this.exceptionService.UnauthorizedException();
+    //   } else {
+    //     userM.username = signUp.username;
+    //     userM.password = signUp.password;
     
-        this.logger.log('signUpCustomerUseCases execute', 'New user have been inserted');
-      }
-    //});
+    //     this.logger.log('signUpCustomerUseCases execute', 'New user have been inserted');
+    //   }
+    // //});
     
-    // Login Customer
-    if(userType == UserType.CUSTOMER) {
+    // // Login Customer
+    // if(userType == UserType.CUSTOMER) {
 
 
-    } else if(userType == UserType.DRIVER) {
+    // } else if(userType == UserType.DRIVER) {
 
-    // Login Driver
-    }
+    // // Login Driver
+    // }
     
 
    
-    return success;
-  }
+    // return success;
+  //}
+
+  // private executeSignIn(signUpM: SignUpM, userType: UserType) {
+
+  // }
 }

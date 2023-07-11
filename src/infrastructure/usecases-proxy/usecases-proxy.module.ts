@@ -26,6 +26,7 @@ import { EnvironmentConfigService } from '../config/environment-config/environme
 import { UseCaseProxy } from './usecases-proxy';
 import { ExceptionsService } from '../exceptions/exceptions.service';
 import { postCustomersSignUpUseCases } from 'src/usecases/customers/postCustomersSignUpUseCases';
+import { postDriversSignUpUseCases } from 'src/usecases/drivers/postSignUpDriversUseCases';
 
 @Module({
   imports: [LoggerModule, JwtModule, BcryptModule, EnvironmentConfigModule, RepositoriesModule, ExceptionsModule],
@@ -44,6 +45,9 @@ export class UsecasesProxyModule {
 
   // Customers
   static POST_CUSTOMERS_SIGN_UP_USECASE_PROXY = 'postCustomersSignUpUseCasesProxy';
+
+  // Drivers
+  static POST_DRIVERS_SIGN_UP_USECASE_PROXY = 'postDriversSignUpUseCasesProxy';
 
   static register(): DynamicModule {
     return {
@@ -99,10 +103,16 @@ export class UsecasesProxyModule {
             new UseCaseProxy(new deleteTodoUseCases(logger, todoRepository)),
         },
         {
-          inject: [LoggerService, DatabaseUserRepository, ExceptionsService],
+          inject: [LoggerService, DatabaseUserRepository, ExceptionsService, BcryptService],
           provide: UsecasesProxyModule.POST_CUSTOMERS_SIGN_UP_USECASE_PROXY,
-          useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, exceptionService: ExceptionsService) =>
-            new UseCaseProxy(new postCustomersSignUpUseCases(logger, userRepository, exceptionService)),
+          useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, exceptionService: ExceptionsService, bcryptService: BcryptService) =>
+            new UseCaseProxy(new postCustomersSignUpUseCases(logger, userRepository, exceptionService, bcryptService)),
+        },
+        {
+          inject: [LoggerService, DatabaseUserRepository, ExceptionsService, BcryptService],
+          provide: UsecasesProxyModule.POST_DRIVERS_SIGN_UP_USECASE_PROXY,
+          useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, exceptionService: ExceptionsService, bcryptService: BcryptService) =>
+            new UseCaseProxy(new postDriversSignUpUseCases(logger, userRepository, exceptionService, bcryptService)),
         },
       ],
       exports: [
@@ -114,8 +124,8 @@ export class UsecasesProxyModule {
         UsecasesProxyModule.LOGIN_USECASES_PROXY,
         UsecasesProxyModule.IS_AUTHENTICATED_USECASES_PROXY,
         UsecasesProxyModule.LOGOUT_USECASES_PROXY,
-        //UsecasesProxyModule.POST_SIGNUP_USECASES_PROXY,
-        UsecasesProxyModule.POST_CUSTOMERS_SIGN_UP_USECASE_PROXY
+        UsecasesProxyModule.POST_CUSTOMERS_SIGN_UP_USECASE_PROXY,
+        UsecasesProxyModule.POST_DRIVERS_SIGN_UP_USECASE_PROXY
       ],
     };
   }

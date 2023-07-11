@@ -3,11 +3,12 @@ export class SignUpM {
     password: string;
     confirmPassword: string;
 
-    validateConfirmPassword(password:string, confirmPassword: string): boolean {
+    async validateConfirmPassword(password:string, confirmPassword: string): Promise<boolean> {
         let validate = true;
         if(password != confirmPassword) {
             validate = false;
         }
-        return validate;
+        return await validate;
     }
+
 } 

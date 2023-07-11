@@ -5,6 +5,7 @@ export class UserWithoutPassword {
   updatedAt: Date;
   lastLogin: Date;
   hashRefreshToken: string;
+  roleId: number;
 }
 
 export class UserM extends UserWithoutPassword {
