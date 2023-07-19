@@ -2,7 +2,7 @@ import { UserRepository } from 'src/domain/repositories/userRepository.interface
 import { ILogger } from '../../domain/logger/logger.interface';
 import { UserM } from 'src/domain/model/user';
 import { ExceptionsService } from 'src/infrastructure/exceptions/exceptions.service';
-import { SignUpCustomerM } from 'src/domain/model/customers/sign-up-customer';
+import { CustomerSignUpM } from 'src/domain/model/customers/customer-signup';
 import { Roles } from 'src/domain/enums/roles.enum';
 import { BcryptService } from 'src/infrastructure/services/bcrypt/bcrypt.service';
 import { ProfileRepository } from 'src/domain/repositories/profileRepository.interface';
@@ -17,7 +17,7 @@ export class postCustomersSignUpUseCases {
     private readonly bcryptService: BcryptService
   ) {}
 
-  async execute(signUp: SignUpCustomerM): Promise<boolean> {
+  async execute(signUp: CustomerSignUpM): Promise<boolean> {
 
     let userM = new UserM();
     let success = true;
@@ -28,19 +28,15 @@ export class postCustomersSignUpUseCases {
         success = false;
         this.exceptionService.UnauthorizedException({message: 'Password is not Equals'});
     } else {
+      
         userM.username = signUp.username;
         userM.password = await this.bcryptService.hash(signUp.password);
-        userM.roleId = Roles.CUSTOMER;
+        userM.role = Roles.CUSTOMER;
 
         const resultUser = await this.userRepo.createUser(userM);
 
         let profileM = new ProfileM();
-        profileM.userId = resultUser.id;
-        profileM.email = 'jrodas@analytics.pe';
-        profileM.firstName = 'Juan';
-        profileM.lastName  = 'Rodas';
-        profileM.phoneNumber  = '+51943873302';
-        profileM.photo = 'https://avatar.com/1233';
+        profileM.toProfileM(resultUser.id, signUp);
         
         const resultProfile = await this.profileRepo.createProfile(profileM);
 

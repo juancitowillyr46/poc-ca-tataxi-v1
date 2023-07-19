@@ -4,10 +4,11 @@ import { UseCaseProxy } from '../../usecases-proxy/usecases-proxy';
 import { UsecasesProxyModule } from '../../usecases-proxy/usecases-proxy.module';
 import { ApiResponseType } from '../../common/swagger/response.decorator';
 
-import { SignUpM } from 'src/domain/model/sign-up';
+import { SignUpM } from 'src/domain/model/signup';
 import { postCustomersSignUpUseCases } from 'src/usecases/customers/postCustomersSignUpUseCases';
 import { SignUpCustomerPresenter } from './customer.presenter';
 import { CustomerSignUpDto } from './customer.dto';
+import { CustomerSignUpM } from 'src/domain/model/customers/customer-signup';
 
 @Controller('customers')
 @ApiTags('Customers')
@@ -21,12 +22,19 @@ export class CustomersController {
 
   @Post('sign-up')
   @ApiResponseType(SignUpCustomerPresenter, true)
-  async signUp(@Body() addSignUpDto: CustomerSignUpDto) {
+  async signUp(@Body() signUpDto: CustomerSignUpDto) {
 
-    let signUpM = new SignUpM();
-    signUpM.username = addSignUpDto.username;
-    signUpM.confirmPassword = addSignUpDto.confirmPassword;
-    signUpM.password = addSignUpDto.password;
+    // User
+    let signUpM = new CustomerSignUpM();
+    signUpM.username = signUpDto.username;
+    signUpM.confirmPassword = signUpDto.confirmPassword;
+    signUpM.password = signUpDto.password;
+
+    // Profile
+    signUpM.firstName = signUpDto.firstName;
+    signUpM.lastName = signUpDto.lastName;
+    signUpM.phoneNumber = signUpDto.phoneNumber;
+    signUpM.email = signUpDto.email;
 
     const signUpSuccess = await this.postCustomersSignUpUseCases.getInstance().execute(signUpM);
     return new SignUpCustomerPresenter(signUpSuccess, 'Gracias por registrarse');

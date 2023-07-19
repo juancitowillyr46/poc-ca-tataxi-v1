@@ -1,7 +1,10 @@
-import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export abstract class AuditableEntity extends BaseEntity {
-    
+
+    @PrimaryGeneratedColumn()
+    id: number;
+
     // Audit
     @CreateDateColumn({ name: 'created_at',default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;

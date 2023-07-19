@@ -1,3 +1,5 @@
+import { Roles } from "../enums/roles.enum";
+
 export class UserWithoutPassword {
   id: number;
   username: string;
@@ -5,7 +7,7 @@ export class UserWithoutPassword {
   updatedAt: Date;
   lastLogin: Date;
   hashRefreshToken: string;
-  roleId: number;
+  role: Roles;
 }
 
 export class UserM extends UserWithoutPassword {

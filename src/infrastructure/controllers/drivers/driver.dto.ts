@@ -1,20 +1,22 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
-import { SignUpDto } from '../security/signup.dto';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty } from "class-validator";
 
-export class DriverSignUpDto extends SignUpDto {
+export class DriverDto {
+    
+    @ApiProperty({ required: true })
+    @IsNotEmpty()
+    readonly userId: number;
 
-    // @ApiProperty({ required: true })
-    // @IsNotEmpty()
-    // @IsEmail()
-    // readonly username: string;
+    @ApiProperty({ required: true })
+    @IsNotEmpty()
+    readonly assetId: number;
 
-    // @ApiProperty({ required: true })
-    // @IsNotEmpty()
-    // readonly password: string;
+    @ApiProperty({ required: true })
+    @IsNotEmpty()
+    readonly deviceId: number;
 
-    // @ApiProperty({ required: true })
-    // @IsNotEmpty()
-    // readonly confirmPassword: string;
+    @ApiProperty({ required: true })
+    @IsNotEmpty()
+    readonly licenseNumber: string;
 
 }

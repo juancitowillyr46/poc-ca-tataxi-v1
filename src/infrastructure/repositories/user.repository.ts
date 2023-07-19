@@ -13,6 +13,18 @@ export class DatabaseUserRepository implements UserRepository {
     private readonly userEntityRepository: Repository<User>,
   ) {}
 
+  async getUserById(id: number): Promise<UserM> {
+    const userEntity = await this.userEntityRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (!userEntity) {
+      return null;
+    }
+    return this.toUser(userEntity);
+  }
+
   async updateRefreshToken(username: string, refreshToken: string): Promise<void> {
     await this.userEntityRepository.update(
       {
@@ -59,7 +71,7 @@ export class DatabaseUserRepository implements UserRepository {
     const userEntity: User = new User();
     userEntity.username = user.username;
     userEntity.password = user.password;
-    userEntity.roleId = user.roleId;
+    userEntity.role = user.role;
     userEntity.status = Status.AVAILABLE;
     userEntity.changePassword = false;
     userEntity.confirmedEmail = true;

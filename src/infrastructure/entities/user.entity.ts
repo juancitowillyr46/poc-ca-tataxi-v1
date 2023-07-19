@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToOne, JoinColumn } from 'typeorm';
 import { AuditableEntity } from './auditable.entity';
 import { Profile } from './profile.entity';
+import { Roles } from 'src/domain/enums/roles.enum';
 
 export enum Status {
   AVAILABLE  = 'AVAILABLE',
@@ -33,8 +34,8 @@ export class User  extends AuditableEntity {
   hashRefreshToken: string;
 
   // Roles
-  @Column('int', {name: 'role_id'})
-  roleId: number;
+  @Column({enum: Roles, default: Roles.CUSTOMER, name: 'role'})
+  role: number;
 
   @Column({enum: Status, default: Status.AVAILABLE, name: 'status'})
   status: Status;

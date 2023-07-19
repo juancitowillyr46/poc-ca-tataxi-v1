@@ -17,6 +17,7 @@ export class DatabaseProfileRepository implements ProfileRepository {
     async createProfile(profile: ProfileM): Promise<ProfileM> {
       const profileEntity = this.toProfileEntity(profile);
       profileEntity.createdAt = new Date();
+      profileEntity.createdBy = profile.userId;
       const result = await this.profileEntityRepository.insert(profileEntity);
       return this.toProfile(result.generatedMaps[0] as Profile);
     }

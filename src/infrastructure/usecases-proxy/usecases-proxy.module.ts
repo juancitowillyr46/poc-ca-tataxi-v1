@@ -27,8 +27,16 @@ import { EnvironmentConfigService } from '../config/environment-config/environme
 import { UseCaseProxy } from './usecases-proxy';
 import { ExceptionsService } from '../exceptions/exceptions.service';
 import { postCustomersSignUpUseCases } from 'src/usecases/customers/postCustomersSignUpUseCases';
-import { postDriversSignUpUseCases } from 'src/usecases/drivers/postSignUpDriversUseCases';
-
+import { postDriversSignUpUseCases } from 'src/usecases/drivers/postDriversSignUpUseCases';
+import { MySQLDriverRepository } from '../repositories/driver.repository';
+import { postDriversCreateUseCases } from 'src/usecases/drivers/postDriversCreateUseCases';
+import { DatabaseTaxiRequestRepository } from '../repositories/taxi-request.repository';
+import { postCreateTaxiRequestUseCase } from 'src/usecases/taxi-requests/postCreateTaxiRequestUseCase';
+import { TaxiRequestRepository } from 'src/domain/repositories/taxi-request-repository.interface';
+import { postSearchDriversUseCase } from 'src/usecases/taxi-requests/postSearchDriversUseCase';
+import { DatabaseLocationRepository } from '../repositories/location.repository';
+import { postUpdateStatusTaxiRequestUseCase } from 'src/usecases/taxi-requests/postUpdateStatusTaxiRequestUseCase';
+import { getTaxiRequestUseCase } from 'src/usecases/taxi-requests/getTaxiRequestUseCase';
 
 @Module({
   imports: [LoggerModule, JwtModule, BcryptModule, EnvironmentConfigModule, RepositoriesModule, ExceptionsModule],
@@ -50,6 +58,13 @@ export class UsecasesProxyModule {
 
   // Drivers
   static POST_DRIVERS_SIGN_UP_USECASE_PROXY = 'postDriversSignUpUseCasesProxy';
+  static POST_DRIVERS_CREATE_USECASE_PROXY = 'postDriversCreateUseCasesProxy';
+
+  // Taxi requests
+  static POST_TAXI_REQUEST_CREATE_USECASE_PROXY = 'postCreateTaxiRequestUseCase';
+  static POST_SEARCH_DRIVER_USECASE_PROXY = 'postSearchDriversUseCase';
+  static POST_TAXI_REQUEST_UPDATE_STATUS_PROXY = 'postUpdateStatusTaxiRequest';
+  static GET_TAXI_REQUEST_USECASE_PROXY = 'getTaxiRequestUseCase';
 
   static register(): DynamicModule {
     return {
@@ -111,10 +126,46 @@ export class UsecasesProxyModule {
             new UseCaseProxy(new postCustomersSignUpUseCases(logger, userRepository, profileRepository, exceptionService, bcryptService)),
         },
         {
-          inject: [LoggerService, DatabaseUserRepository, ExceptionsService, BcryptService],
+          inject: [LoggerService, DatabaseUserRepository, DatabaseProfileRepository, ExceptionsService, BcryptService],
           provide: UsecasesProxyModule.POST_DRIVERS_SIGN_UP_USECASE_PROXY,
-          useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, exceptionService: ExceptionsService, bcryptService: BcryptService) =>
-            new UseCaseProxy(new postDriversSignUpUseCases(logger, userRepository, exceptionService, bcryptService)),
+          useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, profileRepository: DatabaseProfileRepository, exceptionService: ExceptionsService, bcryptService: BcryptService) =>
+            new UseCaseProxy(new postDriversSignUpUseCases(logger, userRepository, profileRepository, exceptionService, bcryptService)),
+        },
+        {
+          inject: [LoggerService, DatabaseUserRepository, DatabaseProfileRepository, ExceptionsService, BcryptService],
+          provide: UsecasesProxyModule.POST_DRIVERS_SIGN_UP_USECASE_PROXY,
+          useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, profileRepository: DatabaseProfileRepository, exceptionService: ExceptionsService, bcryptService: BcryptService) =>
+            new UseCaseProxy(new postDriversSignUpUseCases(logger, userRepository, profileRepository, exceptionService, bcryptService)),
+        },
+        {
+          inject: [LoggerService, DatabaseUserRepository, MySQLDriverRepository, ExceptionsService],
+          provide: UsecasesProxyModule.POST_DRIVERS_CREATE_USECASE_PROXY,
+          useFactory: (logger: LoggerService, userRepository: DatabaseUserRepository, driverRepository: MySQLDriverRepository, exceptionService: ExceptionsService) =>
+            new UseCaseProxy(new postDriversCreateUseCases(logger, userRepository, driverRepository, exceptionService)),
+        },
+        {
+          inject: [LoggerService, DatabaseTaxiRequestRepository, MySQLDriverRepository, ExceptionsService],
+          provide: UsecasesProxyModule.POST_TAXI_REQUEST_CREATE_USECASE_PROXY,
+          useFactory: (logger: LoggerService, taxiRequestRepo: TaxiRequestRepository, mysqlDriverRepository: MySQLDriverRepository, exceptionService: ExceptionsService) =>
+            new UseCaseProxy(new postCreateTaxiRequestUseCase(logger, taxiRequestRepo, mysqlDriverRepository, exceptionService)),
+        },
+        {
+          inject: [LoggerService, DatabaseLocationRepository, ExceptionsService],
+          provide: UsecasesProxyModule.POST_SEARCH_DRIVER_USECASE_PROXY,
+          useFactory: (logger: LoggerService, locationRepository: DatabaseLocationRepository, exceptionService: ExceptionsService) =>
+            new UseCaseProxy(new postSearchDriversUseCase(logger, locationRepository, exceptionService)),
+        },
+        {
+          inject: [LoggerService, DatabaseTaxiRequestRepository, ExceptionsService],
+          provide: UsecasesProxyModule.POST_TAXI_REQUEST_UPDATE_STATUS_PROXY,
+          useFactory: (logger: LoggerService, taxiRequestRepository: DatabaseTaxiRequestRepository, exceptionService: ExceptionsService) =>
+            new UseCaseProxy(new postUpdateStatusTaxiRequestUseCase(logger, taxiRequestRepository, exceptionService)),
+        },
+        {
+          inject: [LoggerService, DatabaseTaxiRequestRepository, ExceptionsService],
+          provide: UsecasesProxyModule.GET_TAXI_REQUEST_USECASE_PROXY,
+          useFactory: (logger: LoggerService, taxiRequestRepository: DatabaseTaxiRequestRepository, exceptionService: ExceptionsService) =>
+            new UseCaseProxy(new getTaxiRequestUseCase(logger, taxiRequestRepository, exceptionService)),
         },
       ],
       exports: [
@@ -127,7 +178,12 @@ export class UsecasesProxyModule {
         UsecasesProxyModule.IS_AUTHENTICATED_USECASES_PROXY,
         UsecasesProxyModule.LOGOUT_USECASES_PROXY,
         UsecasesProxyModule.POST_CUSTOMERS_SIGN_UP_USECASE_PROXY,
-        UsecasesProxyModule.POST_DRIVERS_SIGN_UP_USECASE_PROXY
+        UsecasesProxyModule.POST_DRIVERS_SIGN_UP_USECASE_PROXY,
+        UsecasesProxyModule.POST_DRIVERS_CREATE_USECASE_PROXY,
+        UsecasesProxyModule.POST_TAXI_REQUEST_CREATE_USECASE_PROXY,
+        UsecasesProxyModule.POST_SEARCH_DRIVER_USECASE_PROXY,
+        UsecasesProxyModule.POST_TAXI_REQUEST_UPDATE_STATUS_PROXY,
+        UsecasesProxyModule.GET_TAXI_REQUEST_USECASE_PROXY
       ],
     };
   }

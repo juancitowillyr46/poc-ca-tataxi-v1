@@ -1,6 +1,6 @@
 import { UserRepository } from 'src/domain/repositories/userRepository.interface';
 import { ILogger } from '../../domain/logger/logger.interface';
-import { SignUpM } from 'src/domain/model/sign-up';
+import { SignUpM } from 'src/domain/model/signup';
 import { UserM } from 'src/domain/model/user';
 import { ExceptionsService } from 'src/infrastructure/exceptions/exceptions.service';
 import { UserType } from 'src/domain/enums/sign-up.enum';
